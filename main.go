@@ -11,7 +11,7 @@ import (
 func NewTestLogger() diskqueue.AppLogFunc {
 	return func(lvl diskqueue.LogLevel, f string, args ...interface{}) {
 		// tbl.Log(fmt.Sprintf(lvl.String()+": "+f, args...))
-		fmt.Println(fmt.Sprintf(lvl.String()+": "+f, args...))
+		//fmt.Println(fmt.Sprintf(lvl.String()+": "+f, args...))
 	}
 }
 
@@ -31,12 +31,23 @@ func main() {
 	defer dq.Close()
 	fmt.Println(dq.Depth())
 
-	err = dq.Put([]byte("test"))
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	go func() {
+		for {
+			msgOut := <-dq.ReadChan()
+			fmt.Println(string(msgOut))
+		}
+	}()
 
-	msgOut := <-dq.ReadChan()
-	fmt.Println(string(msgOut))
+	i := 0
+	for {
+		i++
+		err = dq.Put([]byte(fmt.Sprintf("test:%d", i)))
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		fmt.Println("Depth:", dq.Depth())
+	}
+	select {}
+
 }

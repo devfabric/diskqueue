@@ -1,8 +1,8 @@
 Name = "disk_queue"
 DataPath = "data"
-MaxBytesPerFile = 1024
+MaxBytesPerFile = 2062336000
 MinMsgSize = 4
 MaxMsgSize = 1024
-SyncEvery = 2500
+SyncEvery = 100
 SyncTimeout = 2
 LogLevel = 1
